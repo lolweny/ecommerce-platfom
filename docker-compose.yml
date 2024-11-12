@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./ecommerce-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      NODE_ENV: production
+    networks:
+      - ecommerce_network
+    restart: always
+
+  backend:
+    build: ./ecommerce-backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      PORT: 3001
+      NODE_ENV: production
+      JWT_SECRET: your_jwt_secret
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: Godschildren1972!
+      DB_NAME: ecommerce
+      DB_DIALECT: mysql
+    networks:
+      - ecommerce_network
+    restart: always
+
+  db:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Godschildren1972!
+      MYSQL_DATABASE: ecommerce
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - ecommerce_network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pGodschildren1972! || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    restart: always
+
+volumes:
+  db_data:
+
+networks:
+  ecommerce_network:
+    driver: bridge
+
