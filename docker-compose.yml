@@ -22,10 +22,10 @@ services:
     environment:
       PORT: 3001
       NODE_ENV: production
-      JWT_SECRET: your_jwt_secret
+      JWT_SECRET: your_jwt_secret # Replace with a secure value or load from an .env file
       DB_HOST: db
       DB_USER: root
-      DB_PASSWORD: Godschildren1972!
+      DB_PASSWORD: Godschildren1972! # Consider moving this to an .env file for security
       DB_NAME: ecommerce
       DB_DIALECT: mysql
     networks:
@@ -37,23 +37,23 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: Godschildren1972!
+      MYSQL_ROOT_PASSWORD: Godschildren1972! # Again, consider using an .env file
       MYSQL_DATABASE: ecommerce
     volumes:
       - db_data:/var/lib/mysql
     networks:
       - ecommerce_network
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -pGodschildren1972! || exit 1"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pGodschildren1972!"]
       interval: 10s
       timeout: 5s
       retries: 3
     restart: always
 
-volumes:
-  db_data:
-
 networks:
   ecommerce_network:
     driver: bridge
+
+volumes:
+  db_data:
 

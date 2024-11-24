@@ -1,26 +1,29 @@
-# Use the official Node.js image to build the React app
-FROM node:14 AS builder
+# Stage 1: Build React app
+FROM node:18-alpine AS builder
 
 # Set working directory in the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Use npm install instead of npm ci
 RUN npm install
 
 # Copy the rest of the application code and build it
 COPY . .
 RUN npm run build
 
-# Use nginx to serve the build files
+# Stage 2: Serve React app with Nginx
 FROM nginx:alpine
+
+# Copy nginx configuration to the correct location
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy built React app from the builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose the port for the frontend
 EXPOSE 3000
 
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
 

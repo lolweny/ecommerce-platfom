@@ -1,5 +1,5 @@
-# Use the official Node.js image as the base
-FROM node:14
+# Use the official Node.js image with a specific version as the base
+FROM node:16-alpine AS base
 
 # Set the working directory in the container
 WORKDIR /app
@@ -8,14 +8,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
-# Copy the rest of the application code
+# Copy only necessary files for the application
 COPY . .
 
 # Expose the port your backend will run on
 EXPOSE 3001
 
 # Start the backend
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
 
