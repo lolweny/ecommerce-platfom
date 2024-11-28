@@ -1,0 +1,65 @@
+trigger:
+- main
+
+resources:
+  - repo: self
+
+variables:
+  tag: '$(Build.BuildId)'  # Unique tag for each build
+
+stages:
+- stage: Build
+  displayName: Build and Push Docker Images
+  jobs:
+  - job: Build
+    displayName: Build Images
+    pool:
+      vmImage: 'ubuntu-latest'  # Use a Linux agent
+    steps:
+    # Login to Docker Hub
+    - task: Docker@2
+      displayName: Login to Docker Hub
+      inputs:
+        command: login
+        containerRegistry: 'docker-hub-connection'  # Use your Docker Hub service connection name
+
+    # Build Backend Docker Image
+    - task: Docker@2
+      displayName: Build Backend Docker Image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/ecommerce-backend/Dockerfile'
+        repository: '<your-docker-hub-username>/backend'
+        tags: |
+          $(tag)
+
+    # Push Backend Docker Image to Docker Hub
+    - task: Docker@2
+      displayName: Push Backend Docker Image
+      inputs:
+        command: push
+        containerRegistry: 'docker-hub-connection'
+        repository: '<your-docker-hub-username>/backend'
+        tags: |
+          $(tag)
+
+    # Build Frontend Docker Image
+    - task: Docker@2
+      displayName: Build Frontend Docker Image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/ecommerce-frontend/Dockerfile'
+        repository: '<your-docker-hub-username>/frontend'
+        tags: |
+          $(tag)
+
+    # Push Frontend Docker Image to Docker Hub
+    - task: Docker@2
+      displayName: Push Frontend Docker Image
+      inputs:
+        command: push
+        containerRegistry: 'docker-hub-connection'
+        repository: '<your-docker-hub-username>/frontend'
+        tags: |
+          $(tag)
+
