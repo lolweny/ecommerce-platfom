@@ -12,7 +12,7 @@ stages:
   displayName: Build and Push Docker Images
   jobs:
   - job: Build
-    displayName: Build and Push Docker Images
+    displayName: Build and Push Docker Images to Docker Hub
     pool:
       vmImage: 'ubuntu-latest'  # Use a Linux agent
     steps:
@@ -21,7 +21,7 @@ stages:
       displayName: Login to Docker Hub
       inputs:
         command: login
-        containerRegistry: 'docker-hub-connection'  # Docker Hub service connection name
+        containerRegistry: 'docker-hub-connection'  # Name of your Docker Hub service connection
 
     # Build Backend Docker Image
     - task: Docker@2
