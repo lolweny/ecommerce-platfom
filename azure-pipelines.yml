@@ -12,7 +12,7 @@ stages:
   displayName: Build and Push Docker Images
   jobs:
   - job: Build
-    displayName: Build Images
+    displayName: Build and Push Docker Images
     pool:
       vmImage: 'ubuntu-latest'  # Use a Linux agent
     steps:
@@ -21,7 +21,7 @@ stages:
       displayName: Login to Docker Hub
       inputs:
         command: login
-        containerRegistry: 'docker-hub-connection'  # Use your Docker Hub service connection name
+        containerRegistry: 'docker-hub-connection'  # Docker Hub service connection name
 
     # Build Backend Docker Image
     - task: Docker@2
@@ -29,7 +29,7 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/ecommerce-backend/Dockerfile'
-        repository: '<your-docker-hub-username>/backend'
+        repository: 'lolweny/ecommerce-platform-backend'
         tags: |
           $(tag)
 
@@ -39,7 +39,7 @@ stages:
       inputs:
         command: push
         containerRegistry: 'docker-hub-connection'
-        repository: '<your-docker-hub-username>/backend'
+        repository: 'lolweny/ecommerce-platform-backend'
         tags: |
           $(tag)
 
@@ -49,7 +49,7 @@ stages:
       inputs:
         command: build
         dockerfile: '$(Build.SourcesDirectory)/ecommerce-frontend/Dockerfile'
-        repository: '<your-docker-hub-username>/frontend'
+        repository: 'lolweny/ecommerce-platform-frontend'
         tags: |
           $(tag)
 
@@ -59,7 +59,7 @@ stages:
       inputs:
         command: push
         containerRegistry: 'docker-hub-connection'
-        repository: '<your-docker-hub-username>/frontend'
+        repository: 'lolweny/ecommerce-platform-frontend'
         tags: |
           $(tag)
 
